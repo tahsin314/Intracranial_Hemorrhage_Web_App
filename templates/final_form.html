@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+	<script language="JavaScript" type="text/javascript">
+		function myFunction() {
+  		var x = document.getElementById("mySelect").value;
+  		var Path='/media/mhealth-3/WD Electronics/ML-DL-Research/brain_hemo/photos/';
+  		var ImgDir = ['apple.jpg','orange.jpg','pineapple.jpg','banana.jpg'];
+  		document.getElementById("demo").src = Path+ImgDir[x];
+		}
+	</script>
+
+
+	<form>
+  		Select your favorite fruit:
+  		<select id="mySelect">
+  			<option value="none">--Select--</option>
+    		<option value="0">Apple</option>
+    		<option value="1">Orange</option>
+    		<option value="2">Pineapple</option>
+    		<option value="3">Banana</option>
+  		</select>
+	</form>
+
+<p><button type="button" onclick="myFunction()">Submit</button></p>
+
+
+
+<p> <img id="demo" src = "" width=200 height=200></p>
+
+</body>
+</html>

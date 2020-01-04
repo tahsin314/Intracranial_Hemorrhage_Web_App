@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv='cache-control' content='no-cache'>
+    <meta http-equiv='pragma' content='no-cache'>
+  <title>Intracranial Hemorrhage Classification</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" type="text/css" href="https://drive.google.com/file/d/1qYDlA1eoBm2jBxtw_h_6CbhQmZv8qfKX/view?usp=sharing">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <script language="JavaScript" type="text/javascript">
+    function WindowOutput() {
+      var x = document.getElementById("mySelect").value;
+      var ImgDir = ['{{ url_for('send_file', filename=window_file_list[0])}}',
+                    '{{ url_for('send_file', filename=window_file_list[1])}}',
+                    '{{ url_for('send_file', filename=window_file_list[2])}}'];
+      document.getElementById("demo").src = ImgDir[x];
+    }
+    </script>
+    <script language="JavaScript" type="text/javascript">
+      function HeatmapOutput() {
+        var y = document.getElementById("MySelect").value;
+        var Path = 'uploads/';
+        var ImDir = ['{{heatmap_file_list[0]}}', 
+                      '{{heatmap_file_list[1]}}', 
+                      '{{heatmap_file_list[2]}}', 
+                      '{{heatmap_file_list[3]}}', 
+                      '{{heatmap_file_list[4]}}'];
+        document.getElementById("Demo").src = Path+ImDir[y];
+      }
+      </script>
+
+  <!--<script language="JavaScript" type="text/javascript">
+  //var Path='/media/mhealth-3/WD Electronics/ML-DL-Research/brain_hemo/photos/';
+  // var ImgAry=new Array('','cat.png','dog.jpg');
+  var ImgAry = new Array('', '{{ url_for('send_file', filename=window_file_list[0])}}',
+'{{ url_for('send_file', filename=window_file_list[1])}}',
+'{{ url_for('send_file', filename=window_file_list[2])}}');
+
+  function Swap_Arr(obj,id){
+  var i=obj.selectedIndex;
+  if (i<1){ return; }
+  document.getElementById(id).src=ImgAry[i];
+  }
+//-->
+  <!--</script>
+  <script language="JavaScript" type="text/javascript">
+    //var Path='/media/mhealth-3/WD Electronics/ML-DL-Research/brain_hemo/photos/';
+    // var ImgAry=new Array('','cat.png','dog.jpg');
+  var ImgDir = new Array('','grad_cam_0.png','grad_cam_1.png','grad_cam_2.png','grad_cam_3.png','grad_cam_4.png');
+
+    function Swap_Dir(obj,id){
+    var j=obj.selectedIndex;
+    if (j<1){ return; }
+    document.getElementById(id).src=ImgDir[j];
+    }
+//
+  </script>-->
+</head>
+<body>
+
+<div class="jumbotron text-center">
+  <h1>Intracranial Hemorrhage Classification</h1>
+  <p>This web app helps to detect different classes of ICH from Brain CT scans</p> 
+</div>
+  
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4">
+      <h3 style = "font-weight:bold; text-align: center">Input Image</h3>
+    <img src="{{ url_for('send_file', filename=image_file_name)}}"  style ="max-width: 300px; max-height: 300px; margin-top: 30px; margin-bottom: 10px"> 
+   
+    <p style="font-style: italic; text-align: center; font-weight: bold"> {{ image_file_name }}</p>
+     
+    </div>
+    
+    
+    <div class="col-sm-4">
+      
+      <h3 style = "font-weight:bold; text-align: center">Apply Windowing</h3>
+      <!--<p>Select windowing method from the drop-down list:</p>
+        <select onchange="Swap_Arr(this,'MyImg');" >
+          <option value= "none">--Select--</option>
+          <option value="Brain">Brain</option>
+          <option value="Subdural">Subdural</option>
+          <option value="Bone">Bone</option>
+        </select>
+    <img id="MyImg" src=" " width=300 height=300 >-->
+    
+    <form>
+      Select windowing method from the drop-down list:
+      <select id="mySelect">
+        <option value="none">--Select--</option>
+        <option value="0">Brain</option>
+        <option value="1">Subdural</option>
+        <option value="2">Bone</option>
+      </select>
+    </form>
+  <p><button type="button" onclick="WindowOutput()">Submit</button></p>
+  <p> <img id="demo" src = "" width=300 height=300></p>
+  </div>
+  </div>
+  
+    <div class="col-sm-4">
+      <h3 style = "font-weight:bold; text-align: center">Heat map Visualization</h3>
+      
+      <form>
+      Select subtype for corresponding heatmap visualization:
+        <select id="MySelect">
+          <option value="none">--Select--</option>
+          <option value="0">Epidural</option>
+          <option value="1">Intraparenchymal</option>
+          <option value="2">Intraventricular</option>
+          <option value="3">Subarachnoid</option>
+          <option value="4">Subdural</option>
+        </select>
+      </form>
+      <p><button type="button" onclick="HeatmapOutput()">Submit</button></p>
+      <p> <img id="Demo" src = "" width=300 height=300></p>
+      <!--<p>Select subtype for corresponding heatmap visualization:</p>
+
+        <select onchange="Swap_Dir(this,'Heatmap');">
+          <option value= "none">--Select--</option>
+          <option value="Epidural" >Epidural</option>
+          <option value="Intraparenchymal" >Intraparenchymal</option>
+          <option value="Intraventricular" >Intraventricular</option>
+          <option value="Subarachnoid">Subarachnoid</option>
+          <option value="Subdural">Subdural</option>
+        </select>
+    <img id="Heatmap" src=" " width=300 height=300 >-->
+    </div>
+    
+      <!-- <h3 style = "font-weight:bold; text-align: center">Apply Windowing</h3>
+      <p>Select windowing method from the drop-down list:</p>
+        <select onchange="Swap(this,'MyImg');" >
+      <option >Select Color</option>
+      <option >cat</option>
+      <option >dog</option>
+    </select>
+    <img id="MyImg" src="/media/mhealth-3/WD Electronics/ML-DL-Research/brain_hemo/photos/cat.png" width=300 height=300 > -->
+        <!--<form id="window" action="/window_choice">
+          <select name="Windowing">
+            <option value="Brain">Brain (default)</option>
+            <option value="Subdural">Subdural</option>
+            <option value="Bone">Bone</option>
+          </select>
+          <br><br>
+          <input type="submit" value = "Submit"/>
+        </form>
+    </div>
+    <div id="result">
+    
+    </div>-->
+    <div class="row">
+    <div class="col-sm-4">
+      <h3 style = "font-weight:bold; text-align: center">Prediction</h3>
+      <style>
+         table, th, td {
+            border: 1px solid black;
+         }
+      </style>
+      
+      <!--<ul>
+        <h3 style = "font-weight:bold; text-align: center">Predicted Label & Accuracy</h3>-->
+<style>
+
+
+@import url(https://fonts.googleapis.com/css?family=Expletus+Sans);
+
+/* Basic resets */
+
+* { 
+    margin:0; padding:0; 
+    box-sizing: border-box;
+}
+
+body {
+margin: 50px auto 0;
+max-width: 800px;
+
+font-family: "Expletus Sans", sans-serif;
+}
+
+li {
+
+    width: 50%;
+    float: left;
+    list-style-type: none;
+    
+    padding-right: 5.3333333%;
+}
+
+li:nth-child(even) { margin-bottom: 5em;}
+
+h2 {
+    margin: 0 0 1.5em;
+    border-bottom: 1px solid #ccc;
+    
+    padding: 0 0 .25em;
+}
+
+/* Styling an indeterminate progress bar */
+
+progress:not(value) {
+    /* Add your styles here. As part of this walkthrough we will focus only on determinate progress bars. */
+}
+
+/* Styling the determinate progress element */
+
+progress[value] {
+    /* Get rid of the default appearance */
+    appearance: none;
+    
+    /* This unfortunately leaves a trail of border behind in Firefox and Opera. We can remove that by setting the border to none. */
+    border: none;
+    
+    /* Add dimensions */
+    width: 100%; height: 20px;
+    
+    /* Although firefox doesn't provide any additional pseudo class to style the progress element container, any style applied here works on the container. */
+      background-color: whiteSmoke;
+      border-radius: 3px;
+      box-shadow: 0 2px 3px rgba(0,0,0,.5) inset;
+    
+    /* Of all IE, only IE10 supports progress element that too partially. It only allows to change the background-color of the progress value using the 'color' attribute. */
+    color: royalblue;
+    
+    position: relative;
+    margin: 0 0 1.5em; 
+}
+
+/*
+Webkit browsers provide two pseudo classes that can be use to style HTML5 progress element.
+-webkit-progress-bar -> To style the progress element container
+-webkit-progress-value -> To style the progress element value.
+*/
+
+progress[value]::-webkit-progress-bar {
+    background-color: whiteSmoke;
+    border-radius: 3px;
+    box-shadow: 0 2px 3px rgba(0,0,0,.5) inset;
+}
+
+progress[value]::-webkit-progress-value {
+    position: relative;
+    
+    background-size: 35px 20px, 100% 100%, 100% 100%;
+    border-radius:3px;
+    
+    /* Let's animate this */
+    animation: animate-stripes 5s linear infinite;
+}
+
+@keyframes animate-stripes { 100% { background-position: -100px 0; } }
+
+/* Let's spice up things little bit by using pseudo elements. */
+
+progress[value]::-webkit-progress-value:after {
+    /* Only webkit/blink browsers understand pseudo elements on pseudo classes. A rare phenomenon! */
+    content: '';
+    position: absolute;
+    
+    width:5px; height:5px;
+    top:7px; right:7px;
+    
+    background-color: white;
+    border-radius: 100%;
+}
+
+/* Firefox provides a single pseudo class to style the progress element value and not for container. -moz-progress-bar */
+
+progress[value]::-moz-progress-bar {
+    /* Gradient background with Stripes */
+    background-image:
+    -moz-linear-gradient( 135deg,
+                                                     transparent,
+                                                     transparent 33%,
+                                                     rgba(0,0,0,.1) 33%,
+                                                     rgba(0,0,0,.1) 66%,
+                                                     transparent 66%),
+    -moz-linear-gradient( top,
+                                                        rgba(255, 255, 255, .25),
+                                                        rgba(0,0,0,.2)),
+     -moz-linear-gradient( left, #09c, #f44);
+    
+    background-size: 35px 20px, 100% 100%, 100% 100%;
+    border-radius:3px;
+    
+    /* Firefox doesn't support CSS3 keyframe animations on progress element. Hence, we did not include animate-stripes in this code block */
+}
+
+/* Fallback technique styles */
+.progress-bar {
+    background-color: whiteSmoke;
+    border-radius: 3px;
+    box-shadow: 0 2px 3px rgba(0,0,0,.5) inset;
+
+    /* Dimensions should be similar to the parent progress element. */
+    width: 100%; height:20px;
+}
+
+.progress-bar span {
+    background-color: royalblue;
+    border-radius: 3px;
+    
+    display: block;
+    text-indent: -9999px;
+}
+
+p[data-value] { 
+  
+  position: relative; 
+}
+
+/* The percentage will automatically fall in place as soon as we make the width fluid. Now making widths fluid. */
+
+p[data-value]:after {
+    content: attr(data-value) '%';
+    position: absolute; right:0;
+}
+
+
+
+.epidural::-webkit-progress-value  {
+    /* Gradient background with Stripes */
+    background-image:
+    -webkit-linear-gradient( 135deg,
+                                                     transparent,
+                                                     transparent 33%,
+                                                     rgba(0,0,0,.1) 33%,
+                                                     rgba(0,0,0,.1) 66%,
+                                                     transparent 66%),
+    -webkit-linear-gradient( top,
+                                                        rgba(255, 255, 255, .25),
+                                                        rgba(0,0,0,.2)),
+     -webkit-linear-gradient( left, #09c, #f44);
+}
+
+
+.subdural::-webkit-progress-value 
+{
+    /* Gradient background with Stripes */
+    background-image:
+    -webkit-linear-gradient( 135deg,
+                                                     transparent,
+                                                     transparent 33%,
+                                                     rgba(0,0,0,.1) 33%,
+                                                     rgba(0,0,0,.1) 66%,
+                                                     transparent 66%),
+    -webkit-linear-gradient( top,
+                                                        rgba(255, 255, 255, .25),
+                                                        rgba(0,0,0,.2)),
+     -webkit-linear-gradient( left, #09c, #ff0);
+}
+
+
+.subarachnoid::-webkit-progress-value 
+{
+    /* Gradient background with Stripes */
+    background-image:
+    -webkit-linear-gradient( 135deg,
+                                                     transparent,
+                                                     transparent 33%,
+                                                     rgba(0,0,0,.1) 33%,
+                                                     rgba(0,0,0,.1) 66%,
+                                                     transparent 66%),
+    -webkit-linear-gradient( top,
+                                                        rgba(255, 255, 255, .25),
+                                                        rgba(0,0,0,.2)),
+     -webkit-linear-gradient( left, #09c, #690);
+}
+.intraventricular::-webkit-progress-value 
+{
+    /* Gradient background with Stripes */
+    background-image:
+    -webkit-linear-gradient( 135deg,
+                                                     transparent,
+                                                     transparent 33%,
+                                                     rgba(0,0,0,.1) 33%,
+                                                     rgba(0,0,0,.1) 66%,
+                                                     transparent 66%),
+    -webkit-linear-gradient( top,
+                                                        rgba(255, 255, 255, .25),
+                                                        rgba(0,0,0,.2)),
+     -webkit-linear-gradient( left, #09c, #690);
+}
+.intraparenchymal::-webkit-progress-value 
+{
+    /* Gradient background with Stripes */
+    background-image:
+    -webkit-linear-gradient( 135deg,
+                                                     transparent,
+                                                     transparent 33%,
+                                                     rgba(0,0,0,.1) 33%,
+                                                     rgba(0,0,0,.1) 66%,
+                                                     transparent 66%),
+    -webkit-linear-gradient( top,
+                                                        rgba(255, 255, 255, .25),
+                                                        rgba(0,0,0,.2)),
+     -webkit-linear-gradient( left, #09c, #690);
+}
+/* Similarly, for Mozillaa. Unfortunately combining the styles for different browsers will break every other browser. Hence, we need a separate block. */
+
+
+.subdural::-moz-progress-bar {
+    /* Gradient background with Stripes */
+    background-image:
+    -moz-linear-gradient( 135deg,
+                                                     transparent,
+                                                     transparent 33%,
+                                                     rgba(0,0,0,.1) 33%,
+                                                     rgba(0,0,0,.1) 66%,
+                                                     transparent 66%),
+    -moz-linear-gradient( top,
+                                                        rgba(255, 255, 255, .25),
+                                                        rgba(0,0,0,.2)),
+     -moz-linear-gradient( left, #09c, #f44);
+}
+
+
+.epidural::-moz-progress-bar {
+{
+    /* Gradient background with Stripes */
+    background-image:
+    -moz-linear-gradient( 135deg,
+                                                     transparent,
+                                                     transparent 33%,
+                                                     rgba(0,0,0,.1) 33%,
+                                                     rgba(0,0,0,.1) 66%,
+                                                     transparent 66%),
+    -moz-linear-gradient( top,
+                                                        rgba(255, 255, 255, .25),
+                                                        rgba(0,0,0,.2)),
+     -moz-linear-gradient( left, #09c, #ff0);
+}
+
+
+.intraventricular::-moz-progress-bar {
+    /* Gradient background with Stripes */
+    background-image:
+    -moz-linear-gradient( 135deg,
+                                                     transparent,
+                                                     transparent 33%,
+                                                     rgba(0,0,0,.1) 33%,
+                                                     rgba(0,0,0,.1) 66%,
+                                                     transparent 66%),
+    -moz-linear-gradient( top,
+                                                        rgba(255, 255, 255, .25),
+                                                        rgba(0,0,0,.2)),
+     -moz-linear-gradient( left, #09c, #690);
+}
+.intraparenchymal::-moz-progress-bar {
+    /* Gradient background with Stripes */
+    background-image:
+    -moz-linear-gradient( 135deg,
+                                                     transparent,
+                                                     transparent 33%,
+                                                     rgba(0,0,0,.1) 33%,
+                                                     rgba(0,0,0,.1) 66%,
+                                                     transparent 66%),
+    -moz-linear-gradient( top,
+                                                        rgba(255, 255, 255, .25),
+                                                        rgba(0,0,0,.2)),
+     -moz-linear-gradient( left, #09c, #690);
+}
+.subarachnoid::-moz-progress-bar {
+    /* Gradient background with Stripes */
+    background-image:
+    -moz-linear-gradient( 135deg,
+                                                     transparent,
+                                                     transparent 33%,
+                                                     rgba(0,0,0,.1) 33%,
+                                                     rgba(0,0,0,.1) 66%,
+                                                     transparent 66%),
+    -moz-linear-gradient( top,
+                                                        rgba(255, 255, 255, .25),
+                                                        rgba(0,0,0,.2)),
+     -moz-linear-gradient( left, #09c, #690);
+}
+/* Now we are good to duplicate html code for other skills and then add the css code for the new skill based on data-skill */
+
+  
+/* THE END */
+
+</style>
+<ul>
+        <!-- HTML5 -->
+    <p style="width:auto;" data-value="{{ accuracy[0] }}">{{ label[0] }}</p>
+        <progress max="100" value="{{ accuracy[0] }}" class="epidural">
+            <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html // inside it. -->
+            <div class="progress-bar">
+                <span style="width:auto;">{{ accuracy[0] }}%</span>
+            </div>
+        </progress>
+        
+        <!-- CSS3 -->
+    <p style="width:auto;" data-value="{{ accuracy[1] }}">{{ label[1] }}</p>
+        <progress max="100" value="{{ accuracy[1] }}" class="subarachnoid">
+            <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
+            <div class="progress-bar">
+                <span style="width: auto;">{{ accuracy[1] }}%</span>
+            </div>
+        </progress>
+        
+        <!-- jQuery -->
+    <p style="width:auto;" data-value="{{ accuracy[2] }}">{{ label[2] }}</p>
+        <progress max="100" value="{{ accuracy[2] }}" class="intraventricular">
+            <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
+            <div class="progress-bar">
+                <span style="width: auto;">{{ accuracy[2] }}%</span>
+            </div>
+        </progress>
+    <p style="width:auto;" data-value="{{ accuracy[3] }}">{{ label[3] }}</p>
+        <progress max="100" value="{{ accuracy[3] }}" class="subdural">
+            <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
+            <div class="progress-bar">
+                <span style="width: auto;">{{ accuracy[3] }}%</span>
+            </div>
+        </progress>    
+    <p style="width:auto;" data-value="{{ accuracy[4] }}">{{ label[4] }}</p>
+        <progress max="100" value="{{ accuracy[4] }}" class="intraparenchymal">
+            <!-- Browsers that support HTML5 progress element will ignore the html inside `progress` element. Whereas older browsers will ignore the `progress` element and instead render the html inside it. -->
+            <div class="progress-bar">
+                <span style="width: auto;">{{ accuracy[4] }}%</span>
+            </div>
+        </progress> 
+</ul>
+  
+    <div class="row">
+    <a href= "/" style="color:blue;font-size:14;text-align:center" class="button"><b>Back to Home</b></a>
+  </div>
+</div>
+
+</body>
+</html>
