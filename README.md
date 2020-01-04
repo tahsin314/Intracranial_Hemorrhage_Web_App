@@ -99,5 +99,5 @@ Connections                   ttl     opn     rt1     rt5     p50     p90
 
 
 ## Supervisors
--  **[Dr. Taufiq Hasan](http://www.bme.buet.ac.bd/?teams=dr-taufiq-hasan)**
+-  **[Dr. Taufiq Hasan](http://bme.buet.ac.bd/?teams=dr-taufiq-hasan)**
 -  **[Dr. Paul Naggy](https://www.hopkinsmedicine.org/profiles/results/directory/profile/2936930/paul-nagy)**
