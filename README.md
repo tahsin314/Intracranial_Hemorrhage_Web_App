@@ -2,7 +2,8 @@
 
  The objective of this project is to create a web tool for neuro-specialists to assist them in brain hemorrhage detection
  and localization task. An abstract of this project has been submitted to the `Society for Imaging Informatics in Medicine 2019`.
-
+ 
+**Update: This project abstract has been accepted at the [SIIM](https://siim.org/) Conference! Congratulations to everyone who worked, guided and supported us.**
 
 ## Table of Contents
 
